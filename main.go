@@ -222,9 +222,9 @@ func NewRESPWriter(writer io.Writer) *RESPWriter {
 
 func (w *RESPWriter) WriteCommand(args ...string) (err error) {
 	// Write the array prefix and the number of arguments in the array.
-	w.Write(arrayPrefixSlice)
-	w.WriteString(strconv.Itoa(len(args)))
-	w.Write(lineEndingSlice)
+	_, err = w.Write(arrayPrefixSlice)
+	_, err = w.WriteString(strconv.Itoa(len(args)))
+	_, err = w.Write(lineEndingSlice)
 
 	// Write a bulk string for each argument.
 	for _, arg := range args {
@@ -232,8 +232,8 @@ func (w *RESPWriter) WriteCommand(args ...string) (err error) {
 		w.WriteString(strconv.Itoa(len(arg)))
 		w.Write(lineEndingSlice)
 		w.WriteString(arg)
-		w.Write(lineEndingSlice)
+		_, err = w.Write(lineEndingSlice)
 	}
 
-	return w.Flush()
+	return err
 }
